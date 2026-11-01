@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CampusPulse</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f1f5f3;--page:radial-gradient(900px 420px at 90% -8%,#cdeee5 0,transparent 65%),#f1f5f3;--card:#fff;--ink:#0d2321;--mute:#53706c;--line:#dce6e3;--acc:#0f766e;--accink:#fff;--warn:#f59e0b;--ok:#16a34a;--c-general:#0f766e;--c-exam:#f2613f;--c-event:#7c3aed;--c-placement:#d97706;--sh:0 1px 2px rgba(13,35,33,.06),0 10px 26px -14px rgba(13,35,33,.22)}
+:root[data-theme="dark"]{--bg:#09100f;--page:radial-gradient(900px 460px at 88% -10%,#13463f 0,transparent 62%),#09100f;--card:#111c1a;--ink:#e6f2ef;--mute:#93aba6;--line:#1f312e;--acc:#2dd4bf;--accink:#04201d;--ok:#4ade80;--c-general:#2dd4bf;--c-exam:#ff8a6b;--c-event:#a78bfa;--c-placement:#fbbf24;--sh:0 12px 30px -16px rgba(0,0,0,.75)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page) fixed;color:var(--ink);font:16px/1.55 "Plus Jakarta Sans",system-ui,"Segoe UI",sans-serif}
+header{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:12px 24px;background:color-mix(in srgb,var(--card) 82%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+h1{margin:0;font-size:22px;font-weight:800;letter-spacing:-.03em}h1 b{color:var(--acc)}
+h1::before{content:"";display:inline-block;width:11px;height:11px;border-radius:50%;background:var(--acc);margin-right:9px;animation:pulse 2.4s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--acc) 55%,transparent)}70%{box-shadow:0 0 0 10px transparent}100%{box-shadow:0 0 0 0 transparent}}
+@media(prefers-reduced-motion:reduce){h1::before{animation:none}}
+nav{display:flex;gap:4px;background:var(--bg);padding:4px;border-radius:12px;border:1px solid var(--line)}
+nav button{border:0;background:none;color:var(--mute);font:inherit;font-weight:600;padding:8px 16px;border-radius:9px;cursor:pointer}
+nav button[aria-selected=true]{background:var(--acc);color:var(--accink)}
+.who{font-size:14px;color:var(--mute)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--warn);outline-offset:2px}
+main{max-width:980px;margin:0 auto;padding:24px 20px}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 13px;width:100%}
+input::placeholder{color:var(--mute)}
+.bar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}.bar input{flex:1;min-width:200px;width:auto}.bar select{width:auto}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:14px;font-weight:600;padding:6px 15px;border-radius:99px;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.n{--cc:var(--c-general);background:var(--card);border:1px solid var(--line);border-left:5px solid var(--cc);border-radius:16px;padding:16px 18px;margin-bottom:14px;box-shadow:var(--sh)}
+.n.Exam{--cc:var(--c-exam)}.n.Event{--cc:var(--c-event)}.n.Placement{--cc:var(--c-placement)}
+.n h3{margin:0 0 4px;font-size:18px;letter-spacing:-.01em}.n p{margin:6px 0 0;color:var(--mute)}.meta{font-size:13px;color:var(--mute)}
+.btn{font:inherit;font-weight:700;border:0;background:var(--acc);color:var(--accink);padding:9px 16px;border-radius:10px;cursor:pointer;margin:10px 6px 0 0}
+.btn:hover{filter:brightness(1.08)}.btn.alt{background:none;color:var(--acc);border:1px solid var(--acc)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}@media(max-width:720px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--sh)}.panel h2{margin:0 0 12px;font-size:18px}
+label{display:block;font-size:14px;font-weight:600;margin:12px 0 5px}
+.stats{display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.stat{flex:1;min-width:120px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 16px;box-shadow:var(--sh)}.stat b{font-size:28px;display:block;line-height:1.1;color:var(--acc)}
+.empty{color:var(--mute);padding:12px 0}
+.auth{min-height:100vh;display:grid;grid-template-columns:1.15fr 1fr}
+.hero{background:linear-gradient(150deg,#0e4640,#08110f 72%);color:#e6f2ef;padding:56px;display:flex;flex-direction:column;justify-content:space-between}
+.hero h2{font-size:clamp(36px,4.6vw,64px);line-height:1.04;letter-spacing:-.04em;margin:0 0 18px;font-weight:800}
+.hero p{font-size:18px;color:#a9cbc5;max-width:42ch;margin:0}
+.flow{display:flex;flex-wrap:wrap;gap:10px}.flow span{border:1px solid #2a5a53;border-radius:99px;padding:6px 16px;font-size:14px;font-weight:600;color:#cfe8e3}
+.authbox{display:flex;align-items:center;justify-content:center;padding:32px}.authbox .panel{width:100%;max-width:410px;padding:26px}
+@media(max-width:820px){.auth{grid-template-columns:1fr}.hero{display:none}}
+.demo{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}.demo button{flex:1}
+#display{background:linear-gradient(150deg,#0e4640,#08110f 72%);color:#fff;border-radius:22px;min-height:440px;padding:40px;display:flex;flex-direction:column;justify-content:space-between}
+#display .top{display:flex;justify-content:space-between;color:#8fb5ae;font-size:18px}
+#display h2{font-size:clamp(28px,5vw,54px);line-height:1.08;margin:0 0 14px;font-weight:800;letter-spacing:-.03em}
+#display p{font-size:clamp(16px,2.2vw,24px);color:#bcd6d1;margin:0;max-width:60ch}
+#display .tag{display:inline-block;background:#ff8a6b;color:#2a0d05;font-weight:700;padding:3px 13px;border-radius:99px;margin-bottom:14px}
+.dots{display:flex;gap:8px}.dots i{width:30px;height:5px;border-radius:3px;background:#1e3a36}.dots i.on{background:#ff8a6b}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:11px 20px;border-radius:12px;opacity:0;pointer-events:none;transition:opacity .2s;font-weight:600}#toast.show{opacity:1}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div id="loginView" class="auth">
+  <div class="hero">
+    <div><h2>Every announcement.<br>One place.</h2><p>Notices, events and exam updates from every department, ready the moment they are approved.</p></div>
+    <div class="flow"><span>Faculty post</span><span>Admins approve</span><span>Students see it</span></div>
+  </div>
+  <div class="authbox">
+  <div class="panel">
+    <button class="btn alt themeBtn" style="float:right;margin:0;padding:5px 10px"></button>
+    <h1>Campus<b>Pulse</b></h1>
+    <div id="loginForm">
+      <p class="meta">Log in to see notices and events.</p>
+      <label for="email">Email</label><input id="email" type="email" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
+      <label for="pw">Password</label><input id="pw" type="password" autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')">
+      <button class="btn" id="loginBtn" style="width:100%">Log in</button>
+      <p id="loginErr" class="meta" style="color:#c0392b"></p>
+      <button class="btn alt" id="toSignup" style="width:100%;margin:0">Create a student account</button>
+      <div id="demoBox" hidden>
+        <div class="meta" style="margin-top:14px">Demo accounts (password: password123)</div>
+        <div class="demo">
+          <button class="btn alt" data-demo="admin@campus.edu">Admin</button>
+          <button class="btn alt" data-demo="ravi@campus.edu">Faculty</button>
+          <button class="btn alt" data-demo="arjun@campus.edu">Student</button>
+        </div>
+      </div>
+    </div>
+    <div id="signupForm" hidden>
+      <p class="meta">Create a student account. Faculty accounts are made by the admin.</p>
+      <label for="su-name">Full name</label><input id="su-name" autocomplete="off">
+      <label for="su-email">Email</label><input id="su-email" type="email" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')">
+      <label for="su-pw">Password (at least 8 characters)</label><input id="su-pw" type="password" autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly')">
+      <label for="su-dept">Department</label><select id="su-dept"></select>
+      <label for="su-course">Course</label><input id="su-course" placeholder="e.g. B.E. CSE">
+      <label for="su-year">Year of study</label><select id="su-year"><option>1</option><option>2</option><option>3</option><option>4</option></select>
+      <button class="btn" id="signupBtn" style="width:100%">Create account</button>
+      <p id="signupErr" class="meta" style="color:#c0392b"></p>
+      <button class="btn alt" id="toLogin" style="width:100%;margin:0">Back to log in</button>
+    </div>
+  </div>
+  </div>
+</div>
+
+<div id="appView" hidden>
+<header>
+  <h1>Campus<b>Pulse</b></h1>
+  <nav role="tablist" aria-label="Choose a view" id="tabs"></nav>
+  <div class="who"><span id="who"></span> <button class="btn alt themeBtn" style="margin:0 0 0 8px;padding:5px 10px"></button><button class="btn alt" id="logout" style="margin:0 0 0 8px;padding:5px 10px">Log out</button></div>
+</header>
+<main>
+  <section id="v-notices">
+    <div class="bar"><input id="q" type="search" placeholder="Search notices" aria-label="Search notices"><select id="dept" aria-label="Department"></select></div>
+    <div class="chips" id="chips"></div>
+    <div id="slist"></div>
+  </section>
+  <section id="v-staff" hidden>
+    <div class="stats"><div class="stat"><b id="s1">0</b>Published</div><div class="stat"><b id="s2">0</b>Waiting for approval</div><div class="stat"><b id="s3">0</b>Event sign-ups</div></div>
+    <div class="grid">
+      <div class="panel"><h2>Post a notice</h2>
+        <label for="t">Title</label><input id="t">
+        <label for="d">Department</label><select id="d"></select>
+        <label for="c">Category</label><select id="c"></select>
+        <div id="evf" hidden>
+          <label for="venue">Venue</label><input id="venue">
+          <label for="when">Starts at</label><input id="when" type="datetime-local">
+        </div>
+        <label for="b">Message</label><textarea id="b" rows="3"></textarea>
+        <button class="btn" id="post">Post notice</button>
+      </div>
+      <div class="panel"><h2>Waiting for approval</h2><div id="pend"></div></div>
+    </div>
+  </section>
+  <section id="v-users" hidden>
+    <div class="panel" style="margin-bottom:20px"><h2>Add a user</h2>
+      <div class="grid">
+        <div><label for="un">Full name</label><input id="un"><label for="ue">Email</label><input id="ue" type="email"><label for="up">Temporary password (at least 8 characters)</label><input id="up" type="text"></div>
+        <div><label for="ur">Role</label><select id="ur"><option value="student">Student</option><option value="faculty">Faculty</option><option value="admin">Admin</option></select><label for="ud">Department</label><select id="ud"></select><label for="uc">Course (students)</label><input id="uc" placeholder="e.g. B.E. CSE"></div>
+      </div>
+      <button class="btn" id="addUser">Add user</button>
+    </div>
+    <div class="panel"><h2>All users</h2>
+      <div class="bar"><input id="uq" type="search" placeholder="Search name or email" aria-label="Search users"><select id="uf" aria-label="Filter by role"><option value="">All roles</option><option value="admin">Admin</option><option value="faculty">Faculty</option><option value="student">Student</option></select></div>
+      <div id="ulist"></div>
+    </div>
+  </section>
+  <section id="v-display" hidden aria-live="polite"></section>
+</main>
+</div>
+<div id="toast" role="status"></div>
+
+<script>
+var token="",me=null,meta={departments:[],categories:[]},fc="",idx=0,notices=[];
+function $(i){return document.getElementById(i)}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function toast(m){var e=$("toast");e.textContent=m;e.className="show";clearTimeout(toast.h);toast.h=setTimeout(function(){e.className=""},2400)}
+function fmt(d){return d?new Date(d).toLocaleString([], {weekday:"short",day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}):""}
+async function api(path,opt){
+  opt=opt||{};opt.headers={"Content-Type":"application/json",Authorization:"Bearer "+token};
+  var r=await fetch("/api"+path,opt),d=await r.json();
+  if(r.status===401&&me){logout();}
+  if(!r.ok)throw new Error(d.error||"Something went wrong.");
+  return d;
+}
+function saveSession(){try{sessionStorage.setItem("cp",JSON.stringify({token:token,me:me}))}catch(e){}}
+function clearSignup(){["su-name","su-email","su-pw","su-course"].forEach(function(i){$(i).value=""});$("su-year").selectedIndex=0;$("su-dept").selectedIndex=0;$("signupErr").textContent="";$("loginErr").textContent=""}
+function logout(){token="";me=null;$("email").value="";$("pw").value="";clearSignup();$("loginForm").hidden=false;$("signupForm").hidden=true;try{sessionStorage.removeItem("cp")}catch(e){}$("appView").hidden=true;$("loginView").hidden=false}
+
+$("loginBtn").onclick=async function(){
+  $("loginErr").textContent="";
+  try{
+    var d=await fetch("/api/auth/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:$("email").value,password:$("pw").value})});
+    var j=await d.json();if(!d.ok)throw new Error(j.error);
+    token=j.token;me=j.user;saveSession();start();
+  }catch(e){$("loginErr").textContent=e.message}
+};
+document.querySelectorAll("[data-demo]").forEach(function(b){b.onclick=function(){$("email").value=b.dataset.demo;$("pw").value="password123"}});
+$("logout").onclick=logout;
+
+async function start(){
+  $("loginView").hidden=true;$("appView").hidden=false;
+  $("who").textContent=me.name+" ("+me.role+")";
+  var tabs=[["notices","Notices"]];
+  if(me.role!=="student")tabs.push(["staff",me.role==="admin"?"Post & approve":"Post a notice"]);
+  if(me.role==="admin")tabs.push(["users","Users"]);
+  tabs.push(["display","Notice board"]);
+  $("tabs").innerHTML=tabs.map(function(t,i){return '<button role="tab" data-v="'+t[0]+'" aria-selected="'+(i==0)+'">'+t[1]+'</button>'}).join("");
+  meta=await api("/meta");
+  $("dept").innerHTML='<option value="">All departments</option>'+meta.departments.map(function(d){return '<option value="'+d.department_id+'">'+esc(d.name)+'</option>'}).join("");
+  $("d").innerHTML=meta.departments.map(function(d){return '<option value="'+d.department_id+'">'+esc(d.name)+'</option>'}).join("");
+  $("ud").innerHTML='<option value="">No department</option>'+meta.departments.map(function(d){return '<option value="'+d.department_id+'">'+esc(d.name)+'</option>'}).join("");
+  $("c").innerHTML=meta.categories.map(function(c){return '<option value="'+c.category_id+'">'+esc(c.name)+'</option>'}).join("");
+  showView("notices");
+}
+function showView(v){
+  ["notices","staff","users","display"].forEach(function(x){$("v-"+x).hidden=x!==v});
+  document.querySelectorAll("#tabs button").forEach(function(b){b.setAttribute("aria-selected",b.dataset.v===v)});
+  if(v==="notices")loadNotices();if(v==="staff")loadStaff();if(v==="users")loadUsers();if(v==="display")loadBoard();
+}
+function chips(){
+  var all=[{category_id:"",name:"All"}].concat(meta.categories);
+  $("chips").innerHTML=all.map(function(c){return '<button class="chip" aria-pressed="'+(String(c.category_id)===String(fc))+'" data-c="'+c.category_id+'">'+esc(c.name)+'</button>'}).join("");
+}
+async function loadNotices(){
+  chips();
+  var p=new URLSearchParams();if($("q").value)p.set("q",$("q").value);if($("dept").value)p.set("department",$("dept").value);if(fc)p.set("category",fc);
+  try{
+    var rows=await api("/notices?"+p.toString());
+    $("slist").innerHTML=rows.length?rows.map(function(n){
+      var ev=n.event_id?'<div class="meta">'+esc(n.venue)+' &middot; '+fmt(n.starts_at)+' &middot; '+n.signups+' registered</div><button class="btn'+(n.registered?' alt':'')+'" data-r="'+n.event_id+'">'+(n.registered?'Registered. Tap to cancel':'Register')+'</button>':'';
+      return '<article class="n '+esc(n.category)+'"><div class="meta">'+esc(n.department||"Campus-wide")+' &middot; '+esc(n.category)+' &middot; '+esc(n.posted_by)+'</div><h3>'+esc(n.title)+'</h3><p>'+esc(n.body)+'</p>'+ev+'</article>'}).join("")
+      :'<p class="empty">No notices match. Clear the search or pick another department.</p>';
+  }catch(e){toast(e.message)}
+}
+async function loadStaff(){
+  try{
+    var s=await api("/notices/stats");$("s1").textContent=s.published;$("s2").textContent=s.pending;$("s3").textContent=s.signups;
+    if(me.role==="admin"){
+      var p=await api("/notices/pending");
+      $("pend").innerHTML=p.length?p.map(function(n){return '<div class="n '+esc(n.category)+'"><div class="meta">'+esc(n.department||"Campus-wide")+' &middot; '+esc(n.category)+' &middot; '+esc(n.posted_by)+'</div><h3>'+esc(n.title)+'</h3><button class="btn" data-a="'+n.notice_id+'">Approve and publish</button><button class="btn alt" data-x="'+n.notice_id+'">Reject</button></div>'}).join(""):'<p class="empty">Nothing waiting. New notices from faculty appear here.</p>';
+    }else{$("pend").innerHTML='<p class="empty">Your notices are sent to the admin for approval before students see them.</p>'}
+  }catch(e){toast(e.message)}
+}
+async function loadBoard(){
+  try{notices=await api("/notices")}catch(e){return}
+  drawBoard();
+}
+function drawBoard(){
+  var el=$("v-display");
+  if(!notices.length){el.innerHTML='<div id="display"><h2>No notices yet</h2></div>';return}
+  idx=idx%notices.length;var n=notices[idx],now=new Date();
+  el.innerHTML='<div id="display"><div class="top"><span>Campus Updates</span><span>'+now.toLocaleDateString([], {weekday:"short",day:"numeric",month:"short"})+' &middot; '+now.toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})+'</span></div>'+
+  '<div><span class="tag">'+esc(n.category)+'</span><h2>'+esc(n.title)+'</h2><p>'+esc(n.body)+(n.venue?' ('+esc(n.venue)+', '+fmt(n.starts_at)+')':'')+'</p></div>'+
+  '<div class="dots">'+notices.map(function(_,i){return '<i class="'+(i==idx?'on':'')+'"></i>'}).join("")+'</div></div>';
+}
+setInterval(function(){if(me&&!$("v-display").hidden){idx++;drawBoard()}},6000);
+setInterval(function(){if(me&&!$("v-display").hidden)loadBoard()},20000);
+
+document.addEventListener("click",async function(e){
+  var t=e.target;
+  try{
+    if(t.dataset.v)showView(t.dataset.v);
+    if(t.dataset.c!==undefined&&t.classList.contains("chip")){fc=t.dataset.c;loadNotices()}
+    if(t.dataset.r){var r=await api("/events/"+t.dataset.r+"/register",{method:"POST"});toast(r.registered?"You are registered":"Registration cancelled");loadNotices()}
+    if(t.dataset.a){await api("/notices/"+t.dataset.a+"/approve",{method:"PATCH"});toast("Published. Students and the notice board are updated.");loadStaff()}
+    if(t.dataset.x){await api("/notices/"+t.dataset.x+"/reject",{method:"PATCH"});toast("Notice rejected");loadStaff()}
+  }catch(err){toast(err.message)}
+});
+$("q").oninput=loadNotices;$("dept").onchange=loadNotices;
+$("c").onchange=function(){var n=$("c").selectedOptions[0].textContent;$("evf").hidden=n!=="Event"};
+$("post").onclick=async function(){
+  var title=$("t").value.trim();if(!title){toast("Add a title first");$("t").focus();return}
+  var isEv=$("c").selectedOptions[0].textContent==="Event";
+  try{
+    var r=await api("/notices",{method:"POST",body:JSON.stringify({title:title,body:$("b").value.trim()||"No details added.",category_id:$("c").value,department_id:$("d").value,venue:isEv?$("venue").value.trim():undefined,starts_at:isEv?$("when").value:undefined})});
+    $("t").value="";$("b").value="";$("venue").value="";$("when").value="";
+    toast(r.status==="published"?"Published":"Sent for approval");loadStaff();
+  }catch(err){toast(err.message)}
+};
+
+async function loadUsers(){
+  var p=new URLSearchParams();if($("uq").value)p.set("q",$("uq").value);if($("uf").value)p.set("role",$("uf").value);
+  try{
+    var rows=await api("/users?"+p.toString());
+    $("ulist").innerHTML=rows.length?rows.map(function(u){
+      var self=u.user_id===me.id;
+      return '<div class="n" style="border-left-color:'+(u.is_active?'var(--ok)':'var(--mute)')+'"><div class="meta">'+esc(u.email)+' &middot; '+esc(u.department||"No department")+(u.course?' &middot; '+esc(u.course)+(u.year_of_study?', year '+u.year_of_study:''):'')+'</div><h3>'+esc(u.full_name)+(u.is_active?'':' (deactivated)')+(self?' (you)':'')+'</h3>'+
+      '<select data-role="'+u.user_id+'" aria-label="Role for '+esc(u.full_name)+'" style="width:auto"'+(self?' disabled':'')+'>'+["student","faculty","admin"].map(function(r){return '<option value="'+r+'"'+(r===u.role?' selected':'')+'>'+r+'</option>'}).join("")+'</select> '+
+      (self?'':'<button class="btn alt" data-tog="'+u.user_id+'" data-to="'+(u.is_active?0:1)+'">'+(u.is_active?'Deactivate':'Activate')+'</button>')+
+      '<button class="btn alt" data-rp="'+u.user_id+'">Reset password</button></div>'}).join(""):'<p class="empty">No users match.</p>';
+  }catch(e){toast(e.message)}
+}
+$("uq").oninput=loadUsers;$("uf").onchange=loadUsers;
+$("addUser").onclick=async function(){
+  try{
+    await api("/users",{method:"POST",body:JSON.stringify({full_name:$("un").value,email:$("ue").value,password:$("up").value,role:$("ur").value,department_id:$("ud").value,course:$("uc").value})});
+    $("un").value="";$("ue").value="";$("up").value="";$("uc").value="";toast("User added");loadUsers();
+  }catch(e){toast(e.message)}
+};
+document.addEventListener("change",async function(e){
+  if(e.target.dataset.role){try{await api("/users/"+e.target.dataset.role,{method:"PATCH",body:JSON.stringify({role:e.target.value})});toast("Role updated")}catch(err){toast(err.message);loadUsers()}}
+});
+document.addEventListener("click",async function(e){
+  var t=e.target;
+  try{
+    if(t.dataset.tog){await api("/users/"+t.dataset.tog,{method:"PATCH",body:JSON.stringify({is_active:t.dataset.to==="1"})});toast(t.dataset.to==="1"?"Account activated":"Account deactivated");loadUsers()}
+    if(t.dataset.rp){var pw=prompt("Enter a new password (at least 8 characters)");if(pw){await api("/users/"+t.dataset.rp+"/reset-password",{method:"POST",body:JSON.stringify({password:pw})});toast("Password reset")}}
+  }catch(err){toast(err.message)}
+});
+
+(async function(){
+  try{
+    var c=await (await fetch("/api/auth/config")).json();$("demoBox").hidden=!c.demo;
+    var d=await (await fetch("/api/auth/departments")).json();
+    $("su-dept").innerHTML=d.map(function(x){return '<option value="'+x.department_id+'">'+esc(x.name)+'</option>'}).join("");
+  }catch(e){}
+})();
+$("toSignup").onclick=function(){clearSignup();$("loginForm").hidden=true;$("signupForm").hidden=false};
+$("toLogin").onclick=function(){$("signupForm").hidden=true;$("loginForm").hidden=false};
+$("signupBtn").onclick=async function(){
+  $("signupErr").textContent="";
+  try{
+    var r=await fetch("/api/auth/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({full_name:$("su-name").value,email:$("su-email").value,password:$("su-pw").value,department_id:$("su-dept").value,course:$("su-course").value,year_of_study:$("su-year").value})});
+    var j=await r.json();if(!r.ok)throw new Error(j.error);
+    token=j.token;me=j.user;saveSession();clearSignup();start();toast("Welcome to CampusPulse");
+  }catch(e){$("signupErr").textContent=e.message}
+};
+function setTheme(t){document.documentElement.setAttribute("data-theme",t);try{localStorage.setItem("cp-theme2",t)}catch(e){}document.querySelectorAll(".themeBtn").forEach(function(b){b.textContent=t==="dark"?"Light mode":"Dark mode"})}
+document.querySelectorAll(".themeBtn").forEach(function(b){b.onclick=function(){setTheme(document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark")}});
+var th="dark";try{th=localStorage.getItem("cp-theme2")||"dark"}catch(e){}setTheme(th);
+$("email").value="";$("pw").value="";
+try{var s=JSON.parse(sessionStorage.getItem("cp")||"null");if(s&&s.token){token=s.token;me=s.me;start()}}catch(e){}
+</script>
+</body>
+</html>
