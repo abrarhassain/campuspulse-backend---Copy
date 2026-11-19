@@ -48,6 +48,7 @@ CREATE TABLE notices (
   approved_by   INT NULL,
   status        ENUM('draft','pending','published','rejected','archived') NOT NULL DEFAULT 'pending',
   attachment_url VARCHAR(255) NULL,                -- cloud or local file path
+  image_data    MEDIUMBLOB NULL,                   -- the notice picture (JPEG), kept in the database
   is_pinned     BOOLEAN NOT NULL DEFAULT FALSE,
   publish_at    DATETIME NULL,
   expires_at    DATETIME NULL,

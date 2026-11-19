@@ -7,8 +7,12 @@ router.use(authenticate);
 // POST /api/events/:id/register  -> register, or cancel if already registered
 router.post('/:id/register', async (req, res) => {
   try {
-    const [ev] = await db.query('SELECT event_id, capacity FROM events WHERE event_id = ?', [req.params.id]);
-    if (!ev[0]) return res.status(404).json({ error: 'Event not found.' });
+    const [ev] = await db.query(
+      `SELECT e.event_id, e.capacity, n.audience FROM events e
+       LEFT JOIN notices n ON n.notice_id = e.notice_id WHERE e.event_id = ?`, [req.params.id]);
+    if (!ev[0] || (ev[0].audience === 'faculty' && req.user.role === 'student')) {
+      return res.status(404).json({ error: 'Event not found.' });
+    }
 
     const [ex] = await db.query(
       'SELECT registration_id, status FROM event_registrations WHERE event_id = ? AND user_id = ?',
